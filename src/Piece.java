@@ -9,24 +9,55 @@ public class Piece {
 		size = 1;
 	}
 	
-	public void resetAnchor(Tile addend){
-		//new tile is above anchor
-		if (addend.getY() < anchor.getY()){
-			anchor = addend;
-			resetPositions(addend);
-		}
-		//new tile is to the left and on same level.
-		else if (addend.getX() < anchor.getX() && addend.getY() == anchor.getY()){
-			anchor = addend;
-			resetPositions(addend);
-		}
-	}
 	
-	public void resetPositions(Tile newBase){
-		newBase.setX(0);
-		newBase.setY(0);
-	}
-
+	
+	
+	
+	
+	//I decided not to have to reset the anchor. 
+//	public void resetAnchor(Tile addend){
+//		//new tile is above anchor
+//		if (addend.getY() < anchor.getY()){
+//			anchor = addend;
+//			resetPositions(addend);
+//		}
+//		//new tile is to the left and on same level.
+//		else if (addend.getX() < anchor.getX() && addend.getY() == anchor.getY()){
+//			anchor = addend;
+//			resetPositions(addend);
+//		}
+//	}
+//	
+//	public void resetPositions(Tile newBase){
+//		newBase.setX(0);
+//		newBase.setY(0);
+//		resetPosRecurs(newBase);
+//	}
+//
+//	public void resetPosRecurs(Tile tile){
+//		Tile left = tile.getLeft();
+//		Tile above = tile.getAbove();
+//		Tile right = tile.getRight();
+//		Tile below = tile.getBelow();
+//		
+//		if (left != null){
+//			left.setX(tile.getX() -1);
+//			left.setY(tile.getY());
+//			resetPosRecurs(left);
+//		}
+//		if (above != null){
+//			above.setX(tile.getX());
+//			above.setY(tile.getY() -1);
+//			resetPosRecurs(above);
+//			
+//		}
+//		if (right != null){
+//			right.setX(tile.getX()  +1 );
+//			right.setY(tile.getY());
+//			resetPosRecurs
+//		}
+//	}
+	
 	public void addTileAbove(Tile base, Tile addend) {
 		base.setAbove(addend);
 		addend.setBelow(base);

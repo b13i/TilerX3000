@@ -1,5 +1,6 @@
-import java.awt.Color;
 import java.util.ArrayList;
+
+import android.graphics.Color;
 
 public class Tile {
 
@@ -18,7 +19,7 @@ public class Tile {
 	private Tile right;
 	private Tile above;
 	private Tile below;
-
+	
 	
 	// TODO finish
 	public Tile() {
@@ -32,7 +33,7 @@ public class Tile {
 		yPos = 0;
 	}
 	
-	public Tile (char sym){
+	public Tile (char sym, Color color){
 		this.symbol = sym;
 		adjTiles = new ArrayList<Tile>();
 		left = null;
@@ -41,6 +42,8 @@ public class Tile {
 		below = null;
 		xPos = 0;
 		yPos = 0;
+		this.color = color;
+		
 	}
 	
 	

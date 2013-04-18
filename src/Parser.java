@@ -1,14 +1,9 @@
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.util.*;
 
-import javax.swing.*;
+import android.graphics.Color;
 
 public class Parser {
 
@@ -22,9 +17,9 @@ public class Parser {
 	
 	public static void main(String[] args) {
 	
-		Tile tile = new Tile('x');
-		Tile firstLeft = new Tile('y');
-		Tile nextLeft = new Tile('z');
+		Tile tile = new Tile('x', null);
+		Tile firstLeft = new Tile('y', null);
+		Tile nextLeft = new Tile('z', null);
 
 		tile.setLeft(firstLeft);
 		System.out.println(tile.getLeft());
@@ -37,6 +32,7 @@ public class Parser {
 		char[][] temp = fileToMatrix("Checkerboard.txt");
 
 		printCharMatrix(temp);
+		ArrayList<Piece> pieces = makePieces(temp);
 
 	}
 
@@ -87,9 +83,9 @@ public class Parser {
 
 		// colors to work with, only two for now.
 		LinkedList<Color> queue = new LinkedList<Color>();
-		queue.add(Color.blue);
-		queue.add(Color.orange);
-		queue.add(Color.green);
+		queue.add(new Color());
+		queue.add(new Color());
+		queue.add(new Color());
 
 		System.out.println("queue size: " + queue.size());
 		// parsing text into matrix, and getting what characters correspond to
@@ -143,7 +139,8 @@ public class Parser {
 	
 	
 	//TODO unfinished. do later. 
-	public ArrayList<Tile> makePieces(char[][] matrix){
+	public static ArrayList<Piece> makePieces(char[][] matrix){
+		ArrayList<Piece> allPieces = new ArrayList<Piece>();
 		int rows = matrix.length;
 		int columns = matrix[0].length;
 		
@@ -153,13 +150,72 @@ public class Parser {
 					continue;
 				}
 				
-				Tile anchor = new Tile(matrix[i][j]);
-				Piece piece = new Piece(anchor);
-				//after finding an anchor, go through recursively on all sides of it and keep attaching 
-				//to the previous pieces. make sure to check that you don't look outside of matrix.
+				Piece piece = createPiece(matrix, i, j);
+				allPieces.add(piece);
 			}
 		}
 		
 		return null;
 	}
+	
+	public static Piece createPiece(char[][] m, int row, int col){
+		//gonna need symbol, color, pos (0,0) for anchor, 
+		char symbol = m[row][col];
+		Color color = charToColor.get(symbol);
+		
+		Tile anchor = new Tile(symbol, color);
+		anchor.setX(0);
+		anchor.setY(0);
+		m[row][col] = 0;
+		Piece piece = new Piece(anchor);
+		buildPiece(m,row,col,piece,anchor);
+		
+		return null;
+	}
+	
+	public static void buildPiece(char[][] m, int row, int col, Piece p, Tile tile){
+		int leftLimit = 0;
+		int upLimit = 0;
+		int rightLimit = m[0].length -1;
+		int bottomLimit = m.length-1;
+		
+		//left
+		if (!(col-1 < leftLimit)){
+			while (m[row][col-1] != 0){
+				Tile left = new Tile(m[row][col-1], charToColor.get(m[row][col-1]));
+				p.addTileLeft(tile, left);
+				m[row][col-1] = 0;
+				buildPiece(m, row, col-1, p, left );
+			}
+		}
+		//bottom
+		if (!(row+1 > bottomLimit)){
+			while (m[row+1][col] != 0){
+				Tile below = new Tile(m[row+1][col], charToColor.get(m[row+1][col]));
+				p.addTileBelow(tile, below);
+				m[row+1][col] = 0;
+				buildPiece(m, row+1, col, p, below );
+			}
+		}
+		//right
+		if (!(col+1 > rightLimit)){
+			while (m[row][col+1] != 0){
+				Tile right = new Tile(m[row][col+1], charToColor.get(m[row][col+1]));
+				p.addTileRight(tile, right);
+				m[row][col+1] = 0;
+				buildPiece(m, row, col+1, p, right );
+			}
+		}
+		//up
+		if (!(row-1 < upLimit)){
+			while (m[row-1][col] != 0){
+				Tile above = new Tile(m[row-1][col], charToColor.get(m[row-1][col]));
+				p.addTileAbove(tile, above);
+				m[row-1][col] = 0;
+				buildPiece(m, row-1, col, p, above );
+			}
+		}
+		
+	}
+	
 }
